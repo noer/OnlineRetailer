@@ -45,14 +45,14 @@ namespace ProductApi.Controllers
 
             var newProduct = repository.Add(product);
 
-            return CreatedAtRoute("GetProduct", new { id = newProduct.Id }, newProduct);
+            return CreatedAtRoute("GetProduct", new { id = newProduct.productId }, newProduct);
         }
 
         // PUT api/products/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]Product product)
         {
-            if (product == null || product.Id != id)
+            if (product == null || product.productId != id)
             {
                 return BadRequest();
             }
