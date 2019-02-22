@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderApi.Models
@@ -12,9 +14,6 @@ namespace OrderApi.Models
         public DateTime Date { get; set; }
         [Required]
         public string status { get; set; }
-        [Required]
-        public int ProductId { get; set; }
-        [Required]
-        public int Quantity { get; set; }
+        public ICollection<OrderLine> OrderLines { get; set; }
     }
 }
