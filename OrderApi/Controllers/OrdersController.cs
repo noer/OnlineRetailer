@@ -10,7 +10,7 @@ namespace OrderApi.Controllers
     [Route("api/Orders")]
     public class OrdersController : Controller
     {
-        private string PRODUCTS_API = "https://localhost:5001/api/products/";
+        private string PRODUCTS_API = "https://productapi/api/products/";
 
         private readonly IRepository<Order> repository;
 
