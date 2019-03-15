@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 using ProductApi.Data;
 using ProductApi.Infrastructure;
 using ProductApi.Models;
+using SharedModels;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ProductApi
 {
     public class Startup
     {
-        string cloudAMQPConnectionString = 
+        readonly string cloudAMQPConnectionString = 
             "host=bear.rmq.cloudamqp.com;virtualHost=vwwmjixz;username=vwwmjixz;password=JvUd-WcdNGkmCaBQVUxykmM2NEb6R3nc";
         
         public Startup(IConfiguration configuration)
         {
+            Console.WriteLine("Order status: " + OrderDTO.OrderStatus.completed.ToString());
             Configuration = configuration;
         }
 

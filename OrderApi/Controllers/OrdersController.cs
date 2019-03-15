@@ -12,10 +12,10 @@ namespace OrderApi.Controllers
     public class OrdersController : Controller
     {
         private readonly IRepository<Order> repository;
-        IServiceGateway<Product> productServiceGateway;
+        IServiceGateway<ProductDTO> productServiceGateway;
         IMessagePublisher messagePublisher;
 
-        public OrdersController(IRepository<Order> repos, IServiceGateway<Product> gateway, IMessagePublisher publisher)
+        public OrdersController(IRepository<Order> repos, IServiceGateway<ProductDTO> gateway, IMessagePublisher publisher)
         {
             repository = repos;
             productServiceGateway = gateway;

@@ -10,7 +10,7 @@ namespace ProductApi.Infrastructure
     public class MessageListener
     {
         IServiceProvider provider;
-        string connectionString;
+        readonly string connectionString;
 
         // The service provider is passed as a parameter, because the class needs
         // access to the product repository. With the service provider, we can create
@@ -28,7 +28,7 @@ namespace ProductApi.Infrastructure
             using (var bus = RabbitHutch.CreateBus(connectionString))
             {
                 bus.Subscribe<OrderStatusChangedMessage>("productApi", 
-                    ReserveItems, x => x.WithTopic("orderCompleted"));
+                    ReserveItems, x => x.WithTopic(OrderDTO.OrderStatus.completed.ToString()));
 
                 // Block the thread so that it will not exit and stop subscribing.
                 lock (this)
@@ -47,13 +47,16 @@ namespace ProductApi.Infrastructure
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var productRepos = services.GetService<IRepository<Product>>();
+                var productRepos = services.GetService<IRepository<ProductDTO>>();
 
                 // Reserve items of ordered product (should be a single transaction)
                 // Beware that this operation is not idempotent.
-                var product = productRepos.Get(message.ProductId);
-                product.ItemsReserved += message.Quantity;
-                productRepos.Edit(product);
+                foreach (var orderLine in message.Order.OrderLines)
+                {
+                    var product = productRepos.Get(orderLine.ProductId);
+                    product.ItemsReserved += orderLine.Quantity;
+                    productRepos.Edit(product);
+                }
             }
         }
 
