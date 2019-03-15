@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProductApi.Data;
 using ProductApi.Models;
+using SharedModels;
 
 namespace ProductApi.Controllers
 {
@@ -17,9 +18,15 @@ namespace ProductApi.Controllers
 
         // GET: api/products
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IEnumerable<ProductDTO> Get()
         {
-            return repository.GetAll();
+            var listProduct = repository.GetAll();
+            List<ProductDTO> listProductDTO = new List<ProductDTO>();
+            foreach (var prod in listProduct)
+            {
+                listProductDTO.Add(convertProduct(prod));
+            }
+            return listProductDTO;
         }
 
         // GET api/products/5
@@ -31,7 +38,8 @@ namespace ProductApi.Controllers
             {
                 return NotFound();
             }
-            return new ObjectResult(item);
+
+            return new ObjectResult(convertProduct(item));
         }
 
         // POST api/products
@@ -84,6 +92,17 @@ namespace ProductApi.Controllers
 
             repository.Remove(id);
             return new NoContentResult();
+        }
+
+        public ProductDTO convertProduct(Product product)
+        {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.Id = product.productId;
+            productDTO.Name = product.Name;
+            productDTO.Price = product.Price;
+            productDTO.ItemsAvailable = (product.ItemsInStock - product.ItemsReserved);
+
+            return productDTO;
         }
     }
 }
