@@ -1,4 +1,4 @@
-namespace OrderApi.Models
+namespace SharedModels
 {
     public class OrderLineDTO
     {
