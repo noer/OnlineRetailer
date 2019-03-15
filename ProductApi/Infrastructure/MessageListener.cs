@@ -30,6 +30,12 @@ namespace ProductApi.Infrastructure
                 bus.Subscribe<OrderStatusChangedMessage>("productApi", 
                     ReserveItems, x => x.WithTopic(OrderDTO.OrderStatus.completed.ToString()));
 
+                bus.Subscribe<OrderStatusChangedMessage>("productApi",
+                    ShipItems, x => x.WithTopic(OrderDTO.OrderStatus.shipped.ToString()));
+
+                bus.Subscribe<OrderStatusChangedMessage>("productApi",
+                    UnreserveItems, x => x.WithTopic(OrderDTO.OrderStatus.cancelled.ToString()));
+
                 // Block the thread so that it will not exit and stop subscribing.
                 lock (this)
                 {
@@ -49,12 +55,43 @@ namespace ProductApi.Infrastructure
                 var services = scope.ServiceProvider;
                 var productRepos = services.GetService<IRepository<ProductDTO>>();
 
-                // Reserve items of ordered product (should be a single transaction)
-                // Beware that this operation is not idempotent.
                 foreach (var orderLine in message.Order.OrderLines)
                 {
                     var product = productRepos.Get(orderLine.ProductId);
                     product.ItemsReserved += orderLine.Quantity;
+                    productRepos.Edit(product);
+                }
+            }
+        }
+
+        private void ShipItems(OrderStatusChangedMessage message)
+        {
+            using (var scope = provider.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var productRepos = services.GetService<IRepository<ProductDTO>>();
+
+                foreach (var orderLine in message.Order.OrderLines)
+                {
+                    var product = productRepos.Get(orderLine.ProductId);
+                    product.ItemsReserved =- orderLine.Quantity;
+                    product.ItemsInStock =- orderLine.Quantity;
+                    productRepos.Edit(product);
+                }
+            }
+        }
+
+        private void UnreserveItems(OrderStatusChangedMessage message)
+        {
+            using (var scope = provider.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var productRepos = services.GetService<IRepository<ProductDTO>>();
+
+                foreach (var orderLine in message.Order.OrderLines)
+                {
+                    var product = productRepos.Get(orderLine.ProductId);
+                    product.ItemsReserved =- orderLine.Quantity;
                     productRepos.Edit(product);
                 }
             }

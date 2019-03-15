@@ -21,7 +21,6 @@ namespace ProductApi
         
         public Startup(IConfiguration configuration)
         {
-            Console.WriteLine("Order status: " + OrderDTO.OrderStatus.completed.ToString());
             Configuration = configuration;
         }
 
