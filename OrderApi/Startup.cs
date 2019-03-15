@@ -1,17 +1,24 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderApi.Data;
-using OrderApi.Models;
+using OrderApi.Infrastructure;
+using SharedModels;
 using Swashbuckle.AspNetCore.Swagger;
+using Order = OrderApi.Models.Order;
 
 namespace OrderApi
 {
     public class Startup
     {
+        Uri productServiceBaseUrl = new Uri("http://productapi/api/products/");
+
+        private string cloudAMQPConnectionString =
+            "host=bear.rmq.cloudamqp.com;virtualHost=vwwmjixz;username=vwwmjixz;password=JvUd-WcdNGkmCaBQVUxykmM2NEb6R3nc";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,11 +38,19 @@ namespace OrderApi
             // Register database initializer for dependency injection
             services.AddTransient<IDbInitializer, DbInitializer>();
 
+            // Register product service gateway for dependency injection
+            services.AddSingleton<IServiceGateway<Product>>(new
+                ProductServiceGateway(productServiceBaseUrl));
+
+            // Register MessagePublisher (a messaging gateway) for dependency injection
+            services.AddSingleton<IMessagePublisher>(new
+                MessagePublisher(cloudAMQPConnectionString));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "OrderAPI", Version = "v1" });
             });
         }
 
@@ -72,7 +87,7 @@ namespace OrderApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
             
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

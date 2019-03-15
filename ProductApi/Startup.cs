@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProductApi.Data;
+using ProductApi.Infrastructure;
 using ProductApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -12,6 +14,9 @@ namespace ProductApi
 {
     public class Startup
     {
+        string cloudAMQPConnectionString = 
+            "host=bear.rmq.cloudamqp.com;virtualHost=vwwmjixz;username=vwwmjixz;password=JvUd-WcdNGkmCaBQVUxykmM2NEb6R3nc";
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,7 +40,7 @@ namespace ProductApi
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "ProductAPI", Version = "v1" });
             });
         }
 
@@ -51,6 +56,10 @@ namespace ProductApi
                 var dbInitializer = services.GetService<IDbInitializer>();
                 dbInitializer.Initialize(dbContext);
             }
+            
+            // Create a message listener in a separate thread.
+            Task.Factory.StartNew(() =>
+                new MessageListener(app.ApplicationServices, cloudAMQPConnectionString).Start());
 
             if (env.IsDevelopment())
             {
@@ -72,7 +81,7 @@ namespace ProductApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

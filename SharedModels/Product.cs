@@ -1,16 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OrderApi.Models
+﻿namespace SharedModels
 {
     public class Product
     {
-        [Key]
-        public int productId { get; set; }
-        [Required]
+        public int Id { get; set; }
         public string Name { get; set; }
-        [Required]
         public decimal Price { get; set; }
-        [Required]
         public int ItemsInStock { get; set; }
         public int ItemsReserved { get; set; }
     }
