@@ -44,14 +44,14 @@ namespace ProductApi.Controllers
 
         // POST api/products
         [HttpPost]
-        public IActionResult Post([FromBody]Product product)
+        public IActionResult Post([FromBody]ProductDTO product)
         {
             if (product == null)
             {
                 return BadRequest();
             }
 
-            var newProduct = repository.Add(product);
+            var newProduct = repository.Add(convertProductDTO(product));
 
             return CreatedAtRoute("GetProduct", new { id = newProduct.productId }, newProduct);
         }
@@ -103,6 +103,18 @@ namespace ProductApi.Controllers
             productDTO.ItemsAvailable = (product.ItemsInStock - product.ItemsReserved);
 
             return productDTO;
+        }
+
+        public Product convertProductDTO(ProductDTO productDTO)
+        {
+            Product product = new Product();
+
+            product.productId = productDTO.Id;
+            product.Name = productDTO.Name;
+            product.ItemsInStock = productDTO.ItemsAvailable;
+            product.Price = productDTO.Price;
+
+            return product;
         }
     }
 }
