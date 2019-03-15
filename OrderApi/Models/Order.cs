@@ -9,11 +9,20 @@ namespace OrderApi.Models
     {
         [Key]
         public int orderId { get; set; }
+        public int? CustomerId { get; set; }
         [Timestamp]
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         [Required]
-        public string status { get; set; }
         public ICollection<OrderLine> OrderLines { get; set; }
+        public OrderStatus Status { get; set; }
+
+        public enum OrderStatus
+        {
+            cancelled,
+            completed,
+            shipped,
+            paid
+        }
     }
 }

@@ -20,17 +20,12 @@ namespace OrderApi.Infrastructure
             bus.Dispose();
         }
 
-        public void PublishOrderStatusChangedMessage(int productId, int quantity, string topic)
+        public void PublishOrderStatusChangedMessage(OrderDTO order, string topic)
         {
             var message = new OrderStatusChangedMessage
-            { ProductId = productId, Quantity = quantity };
+            { Order = order};
 
             bus.Publish(message, topic);
-        }
-        
-        public void ReserveProducts(ICollection<OrderLineDTO> orderLines)
-        {
-            // Send message to ProductApi with reservations
         }
     }
 }

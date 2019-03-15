@@ -31,7 +31,6 @@ namespace OrderApi.Data
                             ProductId = 1,
                             Quantity = 2,
                             UnitPrice = 3,
-                            Description = "test"
                         }
                     }
                 }
