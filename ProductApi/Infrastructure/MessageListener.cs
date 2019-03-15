@@ -3,6 +3,7 @@ using System.Threading;
 using EasyNetQ;
 using Microsoft.Extensions.DependencyInjection;
 using ProductApi.Data;
+using ProductApi.Models;
 using SharedModels;
 
 namespace ProductApi.Infrastructure
@@ -53,7 +54,7 @@ namespace ProductApi.Infrastructure
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var productRepos = services.GetService<IRepository<ProductDTO>>();
+                var productRepos = services.GetService<IRepository<Product>>();
 
                 foreach (var orderLine in message.Order.OrderLines)
                 {
@@ -69,7 +70,7 @@ namespace ProductApi.Infrastructure
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var productRepos = services.GetService<IRepository<ProductDTO>>();
+                var productRepos = services.GetService<IRepository<Product>>();
 
                 foreach (var orderLine in message.Order.OrderLines)
                 {
@@ -86,7 +87,7 @@ namespace ProductApi.Infrastructure
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var productRepos = services.GetService<IRepository<ProductDTO>>();
+                var productRepos = services.GetService<IRepository<Product>>();
 
                 foreach (var orderLine in message.Order.OrderLines)
                 {
