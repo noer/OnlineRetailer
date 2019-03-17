@@ -12,8 +12,8 @@ namespace OrderApi.Controllers
     public class OrdersController : Controller
     {
         private readonly IRepository<Order> repository;
-        IServiceGateway<ProductDTO> productServiceGateway;
-        IMessagePublisher messagePublisher;
+        private readonly IServiceGateway<ProductDTO> productServiceGateway;
+        private readonly IMessagePublisher messagePublisher;
 
         public OrdersController(IRepository<Order> repos, IServiceGateway<ProductDTO> gateway, IMessagePublisher publisher)
         {
@@ -35,9 +35,8 @@ namespace OrderApi.Controllers
         {
             var item = repository.Get(id);
             if (item == null)
-            {
                 return NotFound();
-            }
+
             return new ObjectResult(item);
         }
 
@@ -46,9 +45,7 @@ namespace OrderApi.Controllers
         public IActionResult Post([FromBody]OrderDTO orderRequest)
         {
             if (orderRequest == null)
-            {
                 return BadRequest();
-            }
             
             // Create Order
             var order = new Order()
@@ -88,10 +85,11 @@ namespace OrderApi.Controllers
         public IActionResult ship(int id)
         {
             var order = repository.Get(id);
+            if (order == null)
+                return NotFound();
+
             if (order.CustomerId == null)
-            {
                 return BadRequest("No customer for this Order. Unable to ship");
-            }
 
             var orderDTO = convertToOrderDto(order);
             
@@ -108,10 +106,11 @@ namespace OrderApi.Controllers
         public IActionResult cancel(int id)
         {
             var order = repository.Get(id);
+            if (order == null)
+                return NotFound();
+
             if (order.Status != Order.OrderStatus.completed)
-            {
                 return BadRequest("Order already shipped");
-            }
 
             var orderDTO = convertToOrderDto(order);
             
@@ -128,8 +127,12 @@ namespace OrderApi.Controllers
         public IActionResult pay(int id)
         {
             var order = repository.Get(id);
+            if (order == null)
+                return NotFound();
+
             if (order.Status == Order.OrderStatus.paid)
                 return BadRequest("Order already paid");
+
             if (order.Status != Order.OrderStatus.shipped)
                 return BadRequest("Order needs to be shipped first");
 
