@@ -94,7 +94,7 @@ namespace ProductApi.Controllers
             return new NoContentResult();
         }
 
-        public ProductDTO convertProduct(Product product)
+        private ProductDTO convertProduct(Product product)
         {
             ProductDTO productDTO = new ProductDTO();
             productDTO.Id = product.productId;
@@ -105,7 +105,7 @@ namespace ProductApi.Controllers
             return productDTO;
         }
 
-        public Product convertProductDTO(ProductDTO productDTO)
+        private Product convertProductDTO(ProductDTO productDTO)
         {
             Product product = new Product();
 
