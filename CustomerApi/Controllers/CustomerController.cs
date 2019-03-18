@@ -16,6 +16,7 @@ namespace CustomerApi.Controllers
             repository = repo;
         }
         // GET: api/customer
+        [HttpGet]
         public IEnumerable<Customer> Get()
         {
             return repository.GetAll();
