@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using ProductApi.Data;
 using ProductApi.Infrastructure;
 using ProductApi.Models;
-using SharedModels;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ProductApi
@@ -30,7 +28,8 @@ namespace ProductApi
         public void ConfigureServices(IServiceCollection services)
         {
             // In-memory database:
-            services.AddDbContext<ProductApiContext>(opt => opt.UseInMemoryDatabase("ProductsDb"));
+            //services.AddDbContext<ProductApiContext>(opt => opt.UseInMemoryDatabase("ProductsDb"));
+            services.AddDbContext<ProductApiContext>(opt => opt.UseSqlite("Data Source=products.db"));
 
             // Register repositories for dependency injection
             services.AddScoped<IRepository<Product>, ProductRepository>();
