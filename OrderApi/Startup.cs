@@ -16,10 +16,8 @@ namespace OrderApi
 {
     public class Startup
     {
-//        Uri productServiceBaseUrl = new Uri("http://productapi/api/products/");
-//        Uri customerServiceBaseUrl = new Uri("http://customerapi/api/customer/");
-        Uri productServiceBaseUrl = new Uri("http://localhost:5000/api/products/");
-        Uri customerServiceBaseUrl = new Uri("http://localhost:5020/api/customer/");
+        Uri productServiceBaseUrl = new Uri("http://productapi/api/products/");
+        Uri customerServiceBaseUrl = new Uri("http://customerapi/api/customer/");
 
         private string cloudAMQPConnectionString =
             "host=bear.rmq.cloudamqp.com;virtualHost=vwwmjixz;username=vwwmjixz;password=JvUd-WcdNGkmCaBQVUxykmM2NEb6R3nc";
