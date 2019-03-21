@@ -33,10 +33,10 @@ namespace CustomerApi.Infrastructure
             using (var bus = RabbitHutch.CreateBus(connectionString))
             {
                 bus.Subscribe<OrderStatusChangedMessage>("customerApi",
-                    UpdateCreditStanding, x => x.WithTopic(OrderDTO.OrderStatus.completed.ToString()));
+                    UpdateCreditStanding, x => x.WithTopic(OrderDTO.OrderStatus.shipped.ToString()));
 
                 bus.Subscribe<OrderStatusChangedMessage>("customerApi",
-                    UpdateCreditStanding, x => x.WithTopic(OrderDTO.OrderStatus.shipped.ToString()));
+                    UpdateCreditStanding, x => x.WithTopic(OrderDTO.OrderStatus.paid.ToString()));
 
 
                 // Block the thread so that it will not exit and stop subscribing.
