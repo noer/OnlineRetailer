@@ -12,7 +12,7 @@ namespace OrderApi.Infrastructure
                 Credentials = new NetworkCredential("8290a89e1403cc", "ac9cbda0bbae65"),
                 EnableSsl = true
             };
-            client.Send("OrderAPI", to, subject, message);
+            client.Send("OrderAPI@mail.com", to, subject, message);
         }
     }
 }

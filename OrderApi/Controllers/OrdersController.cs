@@ -58,7 +58,11 @@ namespace OrderApi.Controllers
                 return BadRequest("Customer does not exist. Please create customer first");
 
             if (customer.creditStanding == false)
+            {
+                mailService.sendMessage(customer.email, "Bad credit standing",
+                    "You are in bad credit standing");
                 return BadRequest("Customer credit standing is not acceptable");
+            }
                 
             var order = new Order()
             {
@@ -73,6 +77,8 @@ namespace OrderApi.Controllers
                 var stockProduct = productServiceGateway.Get(orderLineRequest.ProductId);
                 if (orderLineRequest.Quantity > stockProduct.ItemsAvailable)
                 {
+                    mailService.sendMessage(customer.email, "Products not in stock",
+                        "Some of the ordered products are not in stock");
                     return BadRequest("Order not created. Product " + stockProduct.Name + " is not in stock");
                 }
                 else
@@ -91,6 +97,9 @@ namespace OrderApi.Controllers
             var newOrder = orderRepo.Add(order);
 
             messagePublisher.PublishOrderStatusChangedMessage(orderRequest, order.Status.ToString());
+
+            mailService.sendMessage(customer.email, "Order is confirmed",
+                "Your order has been successfully placed. The order number is: " + newOrder.OrderId);
 
             return CreatedAtRoute("GetOrder", new { id = newOrder.OrderId }, newOrder);
         }
