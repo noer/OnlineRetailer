@@ -8,7 +8,7 @@ namespace OrderApi.Infrastructure
 {
     public class MessagePublisher : IMessagePublisher, IDisposable
     {
-        IBus bus;
+        private readonly IBus bus;
 
         public MessagePublisher(string connectionString)
         {

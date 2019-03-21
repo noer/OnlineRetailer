@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using OrderApi.Data;
 using OrderApi.Infrastructure;
 using SharedModels;
@@ -15,7 +16,10 @@ namespace OrderApi
 {
     public class Startup
     {
-        Uri productServiceBaseUrl = new Uri("http://productapi/api/products/");
+//        Uri productServiceBaseUrl = new Uri("http://productapi/api/products/");
+//        Uri customerServiceBaseUrl = new Uri("http://customerapi/api/customer/");
+        Uri productServiceBaseUrl = new Uri("http://localhost:5000/api/products/");
+        Uri customerServiceBaseUrl = new Uri("http://localhost:5020/api/customer/");
 
         private string cloudAMQPConnectionString =
             "host=bear.rmq.cloudamqp.com;virtualHost=vwwmjixz;username=vwwmjixz;password=JvUd-WcdNGkmCaBQVUxykmM2NEb6R3nc";
@@ -29,8 +33,8 @@ namespace OrderApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // In-memory database:
-            services.AddDbContext<OrderApiContext>(opt => opt.UseInMemoryDatabase("OrdersDb"));
+            // Sqlite database:
+            services.AddDbContext<OrderApiContext>(opt => opt.UseSqlite("Data Source=orders.db"));
 
             // Register repositories for dependency injection
             services.AddScoped<IRepository<Order>, OrderRepository>();
@@ -42,11 +46,19 @@ namespace OrderApi
             services.AddSingleton<IServiceGateway<ProductDTO>>(new
                 ProductServiceGateway(productServiceBaseUrl));
 
+            // Register customer service gateway for dependency injection
+            services.AddSingleton<IServiceGateway<CustomerDTO>>(new
+                CustomerServiceGateway(customerServiceBaseUrl));
+
             // Register MessagePublisher (a messaging gateway) for dependency injection
             services.AddSingleton<IMessagePublisher>(new
                 MessagePublisher(cloudAMQPConnectionString));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).
+                AddJsonOptions(options =>
+                    {
+                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    });
             
             services.AddSwaggerGen(c =>
             {
@@ -84,7 +96,7 @@ namespace OrderApi
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order API V1");
             });
             
             //app.UseHttpsRedirection();

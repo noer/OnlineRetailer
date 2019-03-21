@@ -8,10 +8,9 @@ namespace OrderApi.Models
     public class Order
     {
         [Key]
-        public int orderId { get; set; }
+        public int OrderId { get; set; }
         public int? CustomerId { get; set; }
         [Timestamp]
-        [Required]
         public DateTime? Date { get; set; }
         [Required]
         public ICollection<OrderLine> OrderLines { get; set; }

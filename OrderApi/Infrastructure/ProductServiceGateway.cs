@@ -6,7 +6,7 @@ namespace OrderApi.Infrastructure
 {
     public class ProductServiceGateway : IServiceGateway<ProductDTO>
     {
-        Uri productServiceBaseUrl;
+        private readonly Uri productServiceBaseUrl;
 
         public ProductServiceGateway(Uri baseUrl)
         {

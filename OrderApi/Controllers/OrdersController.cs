@@ -4,21 +4,24 @@ using OrderApi.Data;
 using OrderApi.Infrastructure;
 using OrderApi.Models;
 using SharedModels;
-using Order = OrderApi.Models.Order;
 
 namespace OrderApi.Controllers
 {
     [Route("api/Orders")]
     public class OrdersController : Controller
     {
-        private readonly IRepository<Order> repository;
+        private readonly IRepository<Order> orderRepo;
         private readonly IServiceGateway<ProductDTO> productServiceGateway;
+        private readonly IServiceGateway<CustomerDTO> customerServiceGateway;
         private readonly IMessagePublisher messagePublisher;
 
-        public OrdersController(IRepository<Order> repos, IServiceGateway<ProductDTO> gateway, IMessagePublisher publisher)
+        public OrdersController(
+            IRepository<Order> repository, IServiceGateway<ProductDTO> productGateway,
+            IServiceGateway<CustomerDTO> customerGateway, IMessagePublisher publisher)
         {
-            repository = repos;
-            productServiceGateway = gateway;
+            orderRepo = repository;
+            productServiceGateway = productGateway;
+            customerServiceGateway = customerGateway;
             messagePublisher = publisher;
         }
 
@@ -26,14 +29,14 @@ namespace OrderApi.Controllers
         [HttpGet]
         public IEnumerable<Order> Get()
         {
-            return repository.GetAll();
+            return orderRepo.GetAll();
         }
 
         // GET api/orders/5
         [HttpGet("{id}", Name = "GetOrder")]
         public IActionResult Get(int id)
         {
-            var item = repository.Get(id);
+            var item = orderRepo.Get(id);
             if (item == null)
                 return NotFound();
 
@@ -47,13 +50,20 @@ namespace OrderApi.Controllers
             if (orderRequest == null)
                 return BadRequest();
             
-            // Create Order
+            var customer = customerServiceGateway.Get(orderRequest.CustomerId);
+            if (customer == null)
+                return BadRequest("Customer does not exist. Please create customer first");
+
+            if (customer.creditStanding == false)
+                return BadRequest("Customer credit standing is not acceptable");
+                
             var order = new Order()
             {
                 CustomerId = orderRequest.CustomerId,
-                Status = Order.OrderStatus.completed
+                Status = Order.OrderStatus.completed,
+                OrderLines = new List<OrderLine>()
             };
-            
+
             // Check that products are in stock
             foreach (var orderLineRequest in orderRequest.OrderLines)
             {
@@ -66,6 +76,7 @@ namespace OrderApi.Controllers
                 {
                     var orderLine = new OrderLine()
                     {
+                        Order = order,
                         ProductId = orderLineRequest.ProductId,
                         Quantity = orderLineRequest.Quantity,
                         UnitPrice = stockProduct.Price
@@ -73,18 +84,19 @@ namespace OrderApi.Controllers
                     order.OrderLines.Add(orderLine);
                 }
             }
-            
-            messagePublisher.PublishOrderStatusChangedMessage(orderRequest, OrderDTO.OrderStatus.completed.ToString());
 
-            var newOrder = repository.Add(order);
-            return CreatedAtRoute("GetOrder", new { id = newOrder.orderId }, newOrder);
+            var newOrder = orderRepo.Add(order);
+
+            messagePublisher.PublishOrderStatusChangedMessage(orderRequest, order.Status.ToString());
+
+            return CreatedAtRoute("GetOrder", new { id = newOrder.OrderId }, newOrder);
         }
 
         [HttpPut]
         [Route("{id}/ship")]
         public IActionResult ship(int id)
         {
-            var order = repository.Get(id);
+            var order = orderRepo.Get(id);
             if (order == null)
                 return NotFound();
 
@@ -93,19 +105,19 @@ namespace OrderApi.Controllers
 
             var orderDTO = convertToOrderDto(order);
             
-            messagePublisher.PublishOrderStatusChangedMessage(orderDTO, OrderDTO.OrderStatus.completed.ToString());
-
             order.Status = Order.OrderStatus.shipped;
-            repository.Edit(order);
+            orderRepo.Edit(order);
 
-            return Ok();
+            messagePublisher.PublishOrderStatusChangedMessage(orderDTO, order.Status.ToString());
+
+            return Ok("Order shipped");
         }
 
         [HttpPut]
         [Route("{id}/cancel")]
         public IActionResult cancel(int id)
         {
-            var order = repository.Get(id);
+            var order = orderRepo.Get(id);
             if (order == null)
                 return NotFound();
 
@@ -114,19 +126,19 @@ namespace OrderApi.Controllers
 
             var orderDTO = convertToOrderDto(order);
             
-            messagePublisher.PublishOrderStatusChangedMessage(orderDTO, OrderDTO.OrderStatus.cancelled.ToString());
-
             order.Status = Order.OrderStatus.cancelled;
-            repository.Edit(order);
+            orderRepo.Edit(order);
 
-            return Ok();
+            messagePublisher.PublishOrderStatusChangedMessage(orderDTO, order.Status.ToString());
+
+            return Ok("Order cancelled");
         }
 
         [HttpPut]
         [Route("{id}/pay")]
         public IActionResult pay(int id)
         {
-            var order = repository.Get(id);
+            var order = orderRepo.Get(id);
             if (order == null)
                 return NotFound();
 
@@ -138,12 +150,12 @@ namespace OrderApi.Controllers
 
             var orderDTO = convertToOrderDto(order);
             
-            messagePublisher.PublishOrderStatusChangedMessage(orderDTO, OrderDTO.OrderStatus.paid.ToString());
-
             order.Status = Order.OrderStatus.paid;
-            repository.Edit(order);
+            orderRepo.Edit(order);
 
-            return Ok();
+            messagePublisher.PublishOrderStatusChangedMessage(orderDTO, order.Status.ToString());
+
+            return Ok("Order paid");
         }
 
         private OrderDTO convertToOrderDto(Order order)
@@ -151,7 +163,7 @@ namespace OrderApi.Controllers
             var orderDTO = new OrderDTO()
             {
                 CustomerId = order.CustomerId ?? -1,
-                Status = OrderDTO.OrderStatus.shipped,
+                Status = (OrderDTO.OrderStatus)order.Status,
                 OrderLines = new List<OrderLineDTO>()
             };
             foreach (var line in order.OrderLines)

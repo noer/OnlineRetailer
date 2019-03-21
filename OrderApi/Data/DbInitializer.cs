@@ -10,7 +10,7 @@ namespace OrderApi.Data
         // This method will create and seed the database.
         public void Initialize(OrderApiContext context)
         {
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             // Look for any Products
@@ -24,6 +24,7 @@ namespace OrderApi.Data
                 new Order
                 {
                     Date = DateTime.Today,
+                    CustomerId = 1,
                     OrderLines = new List<OrderLine>()
                     {
                         new OrderLine()
