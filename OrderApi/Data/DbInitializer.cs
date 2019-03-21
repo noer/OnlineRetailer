@@ -23,7 +23,7 @@ namespace OrderApi.Data
             {
                 new Order
                 {
-                    Date = DateTime.Today,
+                    Date = DateTime.Today.ToString(),
                     CustomerId = 1,
                     OrderLines = new List<OrderLine>()
                     {

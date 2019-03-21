@@ -18,7 +18,7 @@ namespace OrderApi.Data
         Order IRepository<Order>.Add(Order entity)
         {
             if (entity.Date == null)
-                entity.Date = DateTime.Now;
+                entity.Date = DateTime.Now.ToString();
             
             var newOrder = db.Orders.Add(entity).Entity;
             db.SaveChanges();
