@@ -14,15 +14,18 @@ namespace OrderApi.Controllers
         private readonly IServiceGateway<ProductDTO> productServiceGateway;
         private readonly IServiceGateway<CustomerDTO> customerServiceGateway;
         private readonly IMessagePublisher messagePublisher;
+        private readonly IMailService mailService;
 
         public OrdersController(
             IRepository<Order> repository, IServiceGateway<ProductDTO> productGateway,
-            IServiceGateway<CustomerDTO> customerGateway, IMessagePublisher publisher)
+            IServiceGateway<CustomerDTO> customerGateway, IMessagePublisher publisher,
+            IMailService mail)
         {
             orderRepo = repository;
             productServiceGateway = productGateway;
             customerServiceGateway = customerGateway;
             messagePublisher = publisher;
+            mailService = mail;
         }
 
         // GET: api/orders

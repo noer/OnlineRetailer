@@ -48,6 +48,9 @@ namespace OrderApi
             services.AddSingleton<IServiceGateway<CustomerDTO>>(new
                 CustomerServiceGateway(customerServiceBaseUrl));
 
+            // Register mail service gateway for dependency injection
+            services.AddSingleton<IMailService>(new MailService());
+
             // Register MessagePublisher (a messaging gateway) for dependency injection
             services.AddSingleton<IMessagePublisher>(new
                 MessagePublisher(cloudAMQPConnectionString));
