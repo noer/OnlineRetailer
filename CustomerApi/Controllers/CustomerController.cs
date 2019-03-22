@@ -44,7 +44,7 @@ namespace CustomerApi.Controllers
             {
                 return BadRequest();
             }
-
+            customer.creditStanding = true;
             var newCustomer = repository.Add(customer);
             return CreatedAtRoute("GetCustomer", new { id = newCustomer.customerId }, newCustomer);
         }
