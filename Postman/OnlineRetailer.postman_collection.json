@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "61576fe4-8f70-4ce5-b9b1-1491b3880e80",
+		"_postman_id": "76ff7b27-3fb2-4a10-82a6-10684aa699e3",
 		"name": "OnlineRetailer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,12 +15,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/products",
-					"protocol": "https",
+					"raw": "http://localhost:8661/api/products",
+					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5001",
+					"port": "8661",
 					"path": [
 						"api",
 						"products"
@@ -39,16 +39,16 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/products/1",
-					"protocol": "https",
+					"raw": "http://localhost:8661/api/products/3",
+					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5001",
+					"port": "8661",
 					"path": [
 						"api",
 						"products",
-						"1"
+						"3"
 					]
 				}
 			},
@@ -69,12 +69,12 @@
 					"raw": "{\n    \"name\": \"Wrench\",\n    \"price\": 100,\n    \"itemsInStock\": 5,\n    \"itemsReserved\": 0\n}"
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/products",
-					"protocol": "https",
+					"raw": "http://localhost:8661/api/products",
+					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5001",
+					"port": "8661",
 					"path": [
 						"api",
 						"products"
@@ -95,15 +95,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": 3,\n    \"name\": \"Drill\",\n    \"price\": 500,\n    \"itemsInStock\": 5\n}"
+					"raw": "{\n    \"id\": 3,\n    \"name\": \"Drill\",\n    \"price\": 500,\n    \"itemsAvailable\": 20\n}"
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/products/3",
-					"protocol": "https",
+					"raw": "http://localhost:8661/api/products/3",
+					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5001",
+					"port": "8661",
 					"path": [
 						"api",
 						"products",
@@ -123,12 +123,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/products/1",
-					"protocol": "https",
+					"raw": "http://localhost:8661/api/products/1",
+					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5001",
+					"port": "8661",
 					"path": [
 						"api",
 						"products",
@@ -148,15 +148,118 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://localhost:5002/api/orders",
-					"protocol": "https",
+					"raw": "http://localhost:65136/api/orders",
+					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5002",
+					"port": "65136",
 					"path": [
 						"api",
 						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET api/orders/2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:65136/api/orders/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "65136",
+					"path": [
+						"api",
+						"orders",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT api/orders/2/ship",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:65136/api/orders/2/ship",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "65136",
+					"path": [
+						"api",
+						"orders",
+						"2",
+						"ship"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT api/orders/2/cancel",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:65136/api/orders/2/cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "65136",
+					"path": [
+						"api",
+						"orders",
+						"2",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT api/orders/2/pay",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:65136/api/orders/2/pay",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "65136",
+					"path": [
+						"api",
+						"orders",
+						"2",
+						"pay"
 					]
 				}
 			},
@@ -174,18 +277,162 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"productId\": 3,\n    \"quantity\": 1\n}\n"
+					"raw": "{\n  \"customerId\": 1,\n  \"orderLines\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    }\n  ],\n  \"status\": 0\n}"
 				},
 				"url": {
-					"raw": "http://localhost:5002/api/orders",
+					"raw": "http://localhost:65136/api/orders",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5002",
+					"port": "65136",
 					"path": [
 						"api",
 						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET api/customer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:53579/api/customer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "53579",
+					"path": [
+						"api",
+						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET api/customer/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:53579/api/customer/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "53579",
+					"path": [
+						"api",
+						"customer",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST api/customer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@doe.com\",\n  \"phone\": \"98327487624\",\n  \"billingAddress\": \"Test street 3\",\n  \"shippingAddress\": \"Factor Road 5\",\n}"
+				},
+				"url": {
+					"raw": "http://localhost:53579/api/customer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "53579",
+					"path": [
+						"api",
+						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT api/customer/1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customerId\": 3,\n    \"name\": \"John Doe\",\n    \"email\": \"john@doe.com\",\n    \"phone\": \"98327487624\",\n    \"billingAddress\": \"Johns Street 3\",\n    \"shippingAddress\": \"Factory Road 5\",\n    \"creditStanding\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:53579/api/customer/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "53579",
+					"path": [
+						"api",
+						"customer",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE api/customer/1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customerId\": 3,\n    \"name\": \"John Doe\",\n    \"email\": \"john@doe.com\",\n    \"phone\": \"98327487624\",\n    \"billingAddress\": \"Johns Street 3\",\n    \"shippingAddress\": \"Factory Road 5\",\n    \"creditStanding\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:53579/api/customer/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "53579",
+					"path": [
+						"api",
+						"customer",
+						"3"
 					]
 				}
 			},
