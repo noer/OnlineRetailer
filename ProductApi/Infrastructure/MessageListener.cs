@@ -28,13 +28,13 @@ namespace ProductApi.Infrastructure
 
             using (var bus = RabbitHutch.CreateBus(connectionString))
             {
-                bus.Subscribe<OrderStatusChangedMessage>("productApi", 
+                bus.Subscribe<OrderStatusChangedMessage>("productApiCompleted", 
                     ReserveItems, x => x.WithTopic(OrderDTO.OrderStatus.completed.ToString()));
 
-                bus.Subscribe<OrderStatusChangedMessage>("productApi",
+                bus.Subscribe<OrderStatusChangedMessage>("productApiShipped",
                     ShipItems, x => x.WithTopic(OrderDTO.OrderStatus.shipped.ToString()));
 
-                bus.Subscribe<OrderStatusChangedMessage>("productApi",
+                bus.Subscribe<OrderStatusChangedMessage>("productApiCancelled",
                     UnreserveItems, x => x.WithTopic(OrderDTO.OrderStatus.cancelled.ToString()));
 
                 // Block the thread so that it will not exit and stop subscribing.
