@@ -58,9 +58,9 @@ namespace ProductApi.Controllers
 
         // PUT api/products/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Product product)
+        public IActionResult Put(int id, [FromBody]ProductDTO product)
         {
-            if (product == null || product.productId != id)
+            if (product == null || product.Id != id)
             {
                 return BadRequest();
             }
@@ -74,11 +74,10 @@ namespace ProductApi.Controllers
 
             modifiedProduct.Name = product.Name;
             modifiedProduct.Price = product.Price;
-            modifiedProduct.ItemsInStock = product.ItemsInStock;
-            modifiedProduct.ItemsReserved = product.ItemsReserved;
+            modifiedProduct.ItemsInStock = modifiedProduct.ItemsReserved + product.ItemsAvailable;
 
             repository.Edit(modifiedProduct);
-            return new NoContentResult();
+            return Ok(modifiedProduct);
         }
 
         // DELETE api/products/5
@@ -91,7 +90,7 @@ namespace ProductApi.Controllers
             }
 
             repository.Remove(id);
-            return new NoContentResult();
+            return Ok();
         }
 
         private ProductDTO convertProduct(Product product)
