@@ -18,7 +18,7 @@ namespace ProductApi.Controllers
 
         // GET: api/products
         [HttpGet]
-        public IEnumerable<ProductDTO> Get()
+        public IActionResult Get()
         {
             var listProduct = repository.GetAll();
             List<ProductDTO> listProductDTO = new List<ProductDTO>();
@@ -26,7 +26,7 @@ namespace ProductApi.Controllers
             {
                 listProductDTO.Add(convertProduct(prod));
             }
-            return listProductDTO;
+            return Ok(listProductDTO);
         }
 
         // GET api/products/5
@@ -39,7 +39,7 @@ namespace ProductApi.Controllers
                 return NotFound();
             }
 
-            return new ObjectResult(convertProduct(item));
+            return Ok(convertProduct(item));
         }
 
         // POST api/products
@@ -53,7 +53,7 @@ namespace ProductApi.Controllers
 
             var newProduct = repository.Add(convertProductDTO(product));
 
-            return CreatedAtRoute("GetProduct", new { id = newProduct.productId }, newProduct);
+            return Ok(newProduct);
         }
 
         // PUT api/products/5

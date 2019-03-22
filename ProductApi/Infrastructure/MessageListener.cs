@@ -78,8 +78,8 @@ namespace ProductApi.Infrastructure
                 foreach (var orderLine in message.Order.OrderLines)
                 {
                     var product = productRepos.Get(orderLine.ProductId);
-                    product.ItemsReserved =- orderLine.Quantity;
-                    product.ItemsInStock =- orderLine.Quantity;
+                    product.ItemsReserved -= orderLine.Quantity;
+                    product.ItemsInStock -= orderLine.Quantity;
                     productRepos.Edit(product);
                 }
             }
@@ -97,7 +97,7 @@ namespace ProductApi.Infrastructure
                     foreach (var orderLine in message.Order.OrderLines)
                     {
                         var product = productRepos.Get(orderLine.ProductId);
-                        product.ItemsReserved = -orderLine.Quantity;
+                        product.ItemsReserved -= orderLine.Quantity;
                         productRepos.Edit(product);
                     }
                 }
