@@ -32,10 +32,10 @@ namespace CustomerApi.Infrastructure
 
             using (var bus = RabbitHutch.CreateBus(connectionString))
             {
-                bus.Subscribe<OrderStatusChangedMessage>("customerApi",
+                bus.Subscribe<OrderStatusChangedMessage>("customerApiShipped",
                     UpdateCreditStanding, x => x.WithTopic(OrderDTO.OrderStatus.shipped.ToString()));
 
-                bus.Subscribe<OrderStatusChangedMessage>("customerApi",
+                bus.Subscribe<OrderStatusChangedMessage>("customerApiPaid",
                     UpdateCreditStanding, x => x.WithTopic(OrderDTO.OrderStatus.paid.ToString()));
 
 
