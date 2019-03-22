@@ -56,11 +56,14 @@ namespace ProductApi.Infrastructure
                 var services = scope.ServiceProvider;
                 var productRepos = services.GetService<IRepository<Product>>();
 
-                foreach (var orderLine in message.Order.OrderLines)
+                if (message.Order.OrderLines != null)
                 {
-                    var product = productRepos.Get(orderLine.ProductId);
-                    product.ItemsReserved += orderLine.Quantity;
-                    productRepos.Edit(product);
+                    foreach (var orderLine in message.Order.OrderLines)
+                    {
+                        var product = productRepos.Get(orderLine.ProductId);
+                        product.ItemsReserved += orderLine.Quantity;
+                        productRepos.Edit(product);
+                    }
                 }
             }
         }
@@ -89,11 +92,14 @@ namespace ProductApi.Infrastructure
                 var services = scope.ServiceProvider;
                 var productRepos = services.GetService<IRepository<Product>>();
 
-                foreach (var orderLine in message.Order.OrderLines)
+                if (message.Order.OrderLines != null)
                 {
-                    var product = productRepos.Get(orderLine.ProductId);
-                    product.ItemsReserved =- orderLine.Quantity;
-                    productRepos.Edit(product);
+                    foreach (var orderLine in message.Order.OrderLines)
+                    {
+                        var product = productRepos.Get(orderLine.ProductId);
+                        product.ItemsReserved = -orderLine.Quantity;
+                        productRepos.Edit(product);
+                    }
                 }
             }
         }
