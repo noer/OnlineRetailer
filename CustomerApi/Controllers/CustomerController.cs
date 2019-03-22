@@ -64,9 +64,16 @@ namespace CustomerApi.Controllers
                 return NotFound();
             }
 
-            repository.Edit(customer);
-            return Ok();
+            originalCustomer.shippingAddress = customer.shippingAddress;
+            originalCustomer.billingAddress = customer.billingAddress;
+            originalCustomer.creditStanding = customer.creditStanding;
+            originalCustomer.email = customer.email;
+            originalCustomer.phone = customer.phone;
+            originalCustomer.name = customer.name;
 
+
+            repository.Edit(originalCustomer);
+            return Ok(originalCustomer);
         }
 
         // DELETE: api/customer/5
@@ -79,7 +86,7 @@ namespace CustomerApi.Controllers
             }
 
             repository.Remove(id);
-            return new NoContentResult();
+            return Ok();
         }
     }
 }
