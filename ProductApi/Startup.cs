@@ -1,4 +1,7 @@
 ﻿using System.Threading.Tasks;
+using GraphiQl;
+using GraphQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +39,14 @@ namespace ProductApi
 
             // Register database initializer for dependency injection
             services.AddTransient<IDbInitializer, DbInitializer>();
+            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            services.AddSingleton<ProductQuery>();
+            services.AddSingleton<ProductMutation>();
+            services.AddSingleton<ProductType>();
+            services.AddSingleton<ProductInputType>();
+
+            var sp = services.BuildServiceProvider();
+            services.AddSingleton<ISchema>(new ProductSchema(new FuncDependencyResolver(type => sp.GetService(type))));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
@@ -83,6 +94,7 @@ namespace ProductApi
             });
 
             //app.UseHttpsRedirection();
+            app.UseGraphiQl();
             app.UseMvc();
         }
     }
