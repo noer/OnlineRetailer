@@ -45,6 +45,7 @@ namespace ProductApi.Models
                 resolve: context =>
                 {
                     var product = context.GetArgument<Product>("product");
+
                     repository.Edit(product);
                     return product;
                 });
@@ -53,9 +54,9 @@ namespace ProductApi.Models
                 "deleteProduct",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "productId" }),
-                resolve: context =>
+                resolve: (context) =>
                 {
-                    var productId = int.Parse(context.GetArgument<IntGraphType>("productId").ToString());
+                    var productId = context.GetArgument<int>("productId");
                     repository.Remove(productId);
                     return productId;
                 });
