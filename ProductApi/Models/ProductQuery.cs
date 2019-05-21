@@ -13,12 +13,14 @@ namespace ProductApi.Models
         {
             Field<ListGraphType<ProductType>>(
                 "products",
-                resolve: context => repository.GetAll());
+                resolve: context => repository.GetAll(),
+                description: "Lists all products.");
 
             Field<ProductType>(
                 "product",
                 arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "productId" }),
-                resolve: context => repository.Get(context.GetArgument<int>("productId")));
+                resolve: context => repository.Get(context.GetArgument<int>("productId")),
+                description: "Lists a product. Takes a productId as parameter.");
         }
     }
 
@@ -36,7 +38,8 @@ namespace ProductApi.Models
                 {
                     var product = context.GetArgument<Product>("product");
                     return repository.Add(product);
-                });
+                },
+                description: "Adds a product.");
 
             Field<ProductType>(
                 "editProduct",
@@ -48,7 +51,8 @@ namespace ProductApi.Models
 
                     repository.Edit(product);
                     return product;
-                });
+                },
+                description: "Edits a product.");
 
             Field<IntGraphType>(
                 "deleteProduct",
@@ -59,7 +63,8 @@ namespace ProductApi.Models
                     var productId = context.GetArgument<int>("productId");
                     repository.Remove(productId);
                     return productId;
-                });
+                }, 
+                description: "Deletes a product. Takes a productId as parameter.");
         }
     }
 }
