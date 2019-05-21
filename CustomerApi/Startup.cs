@@ -1,10 +1,13 @@
-﻿using System;
+﻿using GraphQL;
+using GraphQL.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CustomerApi.Data;
 using CustomerApi.Infrastructure;
 using CustomerApi.Models;
+using GraphiQl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +45,15 @@ namespace CustomerApi
 
             // Register database initializer for dependency injection
             services.AddTransient<IDbInitializer, DbInitializer>();
+            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            services.AddSingleton<CustomerQuery>();
+            services.AddSingleton<CustomerMutation>();
+            services.AddSingleton<CustomerType>();
+            services.AddSingleton<CustomerInputType>();
+
+            var sp = services.BuildServiceProvider();
+            services.AddSingleton<ISchema>(new CustomerSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             services.AddSwaggerGen(c =>
@@ -88,6 +100,7 @@ namespace CustomerApi
             });
 
             //app.UseHttpsRedirection();
+            app.UseGraphiQl();
             app.UseMvc();
         }
     }
