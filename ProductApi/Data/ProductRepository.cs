@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using ProductApi.Models;
 
 namespace ProductApi.Data
