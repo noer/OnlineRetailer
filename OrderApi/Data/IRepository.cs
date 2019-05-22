@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OrderApi.Models;
 
 namespace OrderApi.Data
 {
@@ -9,5 +10,6 @@ namespace OrderApi.Data
         T Add(T entity);
         void Edit(T entity);
         void Remove(int id);
+        T UpdateStatus(int id, Order.OrderStatus status);
     }
 }

@@ -10,7 +10,7 @@ namespace OrderApi.Models
         [Key]
         public int OrderId { get; set; }
         public int? CustomerId { get; set; }
-        public String Date { get; set; }
+        public string Date { get; set; }
         [Required]
         public ICollection<OrderLine> OrderLines { get; set; }
         public OrderStatus Status { get; set; }

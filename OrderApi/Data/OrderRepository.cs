@@ -47,5 +47,14 @@ namespace OrderApi.Data
             db.Orders.Remove(order);
             db.SaveChanges();
         }
+
+        Order IRepository<Order>.UpdateStatus(int id, Order.OrderStatus status)
+        {
+            var order = db.Orders.FirstOrDefault(p => p.OrderId == id);
+            order.Status = status;
+            db.Entry(order).State = EntityState.Modified;
+            db.SaveChanges();
+            return order;
+        }
     }
 }

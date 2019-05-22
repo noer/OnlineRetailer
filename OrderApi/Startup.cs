@@ -1,4 +1,7 @@
 ﻿using System;
+using GraphiQl;
+using GraphQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using OrderApi.Data;
 using OrderApi.Infrastructure;
+using OrderApi.Models;
 using SharedModels;
 using Swashbuckle.AspNetCore.Swagger;
 using Order = OrderApi.Models.Order;
@@ -55,6 +59,18 @@ namespace OrderApi
             services.AddSingleton<IMessagePublisher>(new
                 MessagePublisher(cloudAMQPConnectionString));
 
+            // GraphQL related
+            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            services.AddSingleton<OrderQuery>();
+            services.AddSingleton<OrderMutation>();
+            services.AddSingleton<OrderType>();
+            services.AddSingleton<OrderLineType>();
+            services.AddSingleton<OrderInputType>();
+            services.AddSingleton<OrderLineInputType>();
+
+            var sp = services.BuildServiceProvider();
+            services.AddSingleton<ISchema>(new OrderSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).
                 AddJsonOptions(options =>
                     {
@@ -99,7 +115,8 @@ namespace OrderApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Order API V1");
             });
-            
+
+            app.UseGraphiQl();
             //app.UseHttpsRedirection();
             app.UseMvc();
         }
