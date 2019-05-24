@@ -18,7 +18,8 @@ namespace OrderApi.Models
 
             Field<OrderType>(
                 "order",
-                arguments: new QueryArguments(new QueryArgument<IntGraphType> { Name = "orderId" }),
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "orderId" }),
                 resolve: context => repository.Get(context.GetArgument<int>("orderId")));
         }
     }
